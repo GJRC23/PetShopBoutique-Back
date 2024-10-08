@@ -19,9 +19,18 @@ const productSchema = new mongoose.Schema({
   category: { 
     type: String 
   },
+  animalType: {
+    type: String,
+    enum: ['Perro', 'Gato', 'Otros'],
+    required: true
+  },
   isVisible: { 
     type: Boolean, 
     default: true 
+  },
+  isFeatured: {
+    type: Boolean,
+    default: false
   },
 });
 
