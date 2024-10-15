@@ -5,32 +5,34 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: { 
-    type: String, 
-    required: true 
+  description: {
+    type: String,
+    required: true,
   },
-  price: { 
-    type: Number, 
-    required: true 
+  price: {
+    type: Number,
+    required: true,
   },
-  imageUrl: { 
-    type: String 
+  imageUrl: {
+    type: String,
   },
-  category: { 
-    type: String 
+  category: {
+    type: String,
+    enum: ["Alimento", "Accesorio", "Indumentaria", "Juguete", "Aseo"],
+    required: true,
   },
   animalType: {
     type: String,
-    enum: ['Perro', 'Gato', 'Otros'],
-    required: true
+    enum: ["Perro", "Gato", "Otros"],
+    required: true,
   },
-  isVisible: { 
-    type: Boolean, 
-    default: true 
+  isVisible: {
+    type: Boolean,
+    default: true,
   },
   isFeatured: {
     type: Boolean,
-    default: false
+    default: false,
   },
 });
 
