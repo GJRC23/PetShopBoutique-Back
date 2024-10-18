@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware de CORS
 app.use(cors({
-  origin: "https://petshop-boutique.web.app", // Reemplaza con la URL de tu frontend
+  origin: '*', // Reemplaza con la URL de tu frontend
   credentials: true, // Permitir envío de cookies y cabeceras autorizadas
 }));
 
