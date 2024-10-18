@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ["Alimento", "Accesorio", "Indumentaria", "Juguete", "Aseo"],
+    enum: ["Alimento", "Accesorio", "Aseo", "Indumentaria", "Juguete" ],
     required: true,
   },
   animalType: {
