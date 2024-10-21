@@ -41,6 +41,7 @@ mongoose
 // Rutas
 const productRoutes = require("./routes/productRoutes");
 app.use("/api/products", productRoutes);
+app.use("/contacto", contactRoutes);
 
 // Iniciar servidor
 app.listen(PORT, () => {
