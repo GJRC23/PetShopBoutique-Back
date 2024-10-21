@@ -9,8 +9,8 @@ router.post("/", (req, res) => {
   const { name, email, message } = req.body;
 
   const msg = {
-    to: "gastuconsoli8@gmail.com", // Reemplaza con el correo del destinatario
-    from: "rcprogramacion23@gmail.com", // Reemplaza con el correo del remitente
+    to: "nistalfrancisco@gmail.com", // Gmail dueño petshopbouyique
+    from: "rcprogramacion23@gmail.com", // Mail programador
     subject: "Mensaje Petshop Boutique Contacto",
     text: `Nombre: ${name}\nCorreo: ${email}\n\nMensaje:\n${message}`,
   };
