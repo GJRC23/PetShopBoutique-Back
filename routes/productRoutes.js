@@ -1,19 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const { createProduct, deleteProduct } = require("../controllers/productController");
 const Product = require("../models/Product");
 
-// Configurar Multer para la carga de archivos
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// Crear un nuevo producto (con imagen)
-router.post("/", upload.single("image"), createProduct);
+// Crear un nuevo producto
+router.post("/", async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // Obtener todos los productos
 router.get("/", async (req, res) => {
-  const { name, category, isFeatured, sortBy, sortOrder, animalType } = req.query;
+  const { name, category, isFeatured, sortBy, sortOrder, animalType} = req.query;
   const filter = {};
   const sort = {};
 
@@ -21,7 +23,7 @@ router.get("/", async (req, res) => {
   if (name) filter.name = { $regex: name, $options: "i" };
   if (category) filter.category = category;
   if (isFeatured !== undefined && isFeatured !== "") {
-    filter.isFeatured = isFeatured === "true";
+    filter.isFeatured = isFeatured === 'true';
   }
   if (animalType) filter.animalType = animalType;
 
@@ -38,6 +40,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+
 // Obtener un producto por ID
 router.get("/:id", async (req, res) => {
   try {
@@ -52,7 +55,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Actualizar un producto
-router.put("/:id", upload.single("image"), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -65,7 +68,14 @@ router.put("/:id", upload.single("image"), async (req, res) => {
   }
 });
 
-// Eliminar un producto (incluye la eliminación de la imagen de Cloudinary)
-router.delete("/:id", deleteProduct);
+// Eliminar un producto
+router.delete("/:id", async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;
