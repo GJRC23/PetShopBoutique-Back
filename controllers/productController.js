@@ -1,5 +1,5 @@
 const cloudinary = require('../cloudinaryConfig');
-const Product = require('../models/Product'); // Modelo de tu base de datos
+const Product = require('../models/Product');
 
 // Controlador para crear un producto
 const createProduct = async (req, res) => {
@@ -9,28 +9,19 @@ const createProduct = async (req, res) => {
     }
 
     // Subir la imagen a Cloudinary desde el buffer
-    const result = await cloudinary.uploader.upload_stream(
-      { folder: 'petshop-products' },
-      (error, result) => {
-        if (error) return res.status(500).json({ error: 'Error al subir la imagen' });
+    const result = await cloudinary.uploader.upload(req.file.buffer, {
+      folder: 'petshop-products',
+    });
 
-        // Guardar el producto con la URL de la imagen
-        const newProduct = new Product({
-          name: req.body.name,
-          price: req.body.price,
-          imageUrl: result.secure_url,
-        });
+    // Guardar el producto con la URL de la imagen
+    const newProduct = new Product({
+      name: req.body.name,
+      price: req.body.price,
+      imageUrl: result.secure_url,
+    });
 
-        newProduct.save().then((product) => {
-          res.status(201).json(product);
-        }).catch((error) => {
-          res.status(500).json({ error: 'Error al guardar el producto' });
-        });
-      }
-    );
-
-    // Enviar el buffer de la imagen a Cloudinary
-    result.end(req.file.buffer);
+    await newProduct.save();
+    res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ error: 'Error al crear el producto' });
   }
@@ -46,7 +37,7 @@ const deleteProduct = async (req, res) => {
     }
 
     // Eliminar la imagen de Cloudinary
-    const publicId = product.imageUrl.split('/').pop().split('.')[0]; // Obtener el public ID
+    const publicId = product.imageUrl.split('/').pop().split('.')[0];
     await cloudinary.uploader.destroy(`petshop-products/${publicId}`);
 
     // Eliminar el producto de la base de datos
