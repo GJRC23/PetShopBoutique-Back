@@ -5,14 +5,7 @@ const { createProduct, deleteProduct } = require("../controllers/productControll
 const Product = require("../models/Product");
 
 // Configurar Multer para la carga de archivos
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Crear un nuevo producto (con imagen)

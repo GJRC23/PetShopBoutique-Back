@@ -4,25 +4,33 @@ const Product = require('../models/Product'); // Modelo de tu base de datos
 // Controlador para crear un producto
 const createProduct = async (req, res) => {
   try {
-    // Verifica que haya una imagen en la solicitud
     if (!req.file) {
-      return res.status(400).json({ error: 'Por favor, proporciona una imagen.' });
+      return res.status(400).json({ error: 'No se ha proporcionado una imagen' });
     }
 
-    // Subir la imagen a Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'petshop-products',
-    });
+    // Subir la imagen a Cloudinary desde el buffer
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: 'petshop-products' },
+      (error, result) => {
+        if (error) return res.status(500).json({ error: 'Error al subir la imagen' });
 
-    // Crear un nuevo producto con la URL de la imagen
-    const newProduct = new Product({
-      name: req.body.name,
-      price: req.body.price,
-      imageUrl: result.secure_url, // Guarda solo la URL
-    });
+        // Guardar el producto con la URL de la imagen
+        const newProduct = new Product({
+          name: req.body.name,
+          price: req.body.price,
+          imageUrl: result.secure_url,
+        });
 
-    await newProduct.save();
-    res.status(201).json(newProduct);
+        newProduct.save().then((product) => {
+          res.status(201).json(product);
+        }).catch((error) => {
+          res.status(500).json({ error: 'Error al guardar el producto' });
+        });
+      }
+    );
+
+    // Enviar el buffer de la imagen a Cloudinary
+    result.end(req.file.buffer);
   } catch (error) {
     res.status(500).json({ error: 'Error al crear el producto' });
   }
