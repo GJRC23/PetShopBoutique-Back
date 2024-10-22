@@ -4,6 +4,8 @@ const Product = require('../models/Product');
 // Controlador para crear un producto
 const createProduct = async (req, res) => {
   try {
+    console.log('Archivo recibido:', req.file);
+    console.log('Datos del producto:', req.body);
     if (!req.file) {
       return res.status(400).json({ error: 'No se ha proporcionado una imagen' });
     }
@@ -21,8 +23,10 @@ const createProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    console.log('Producto guardado:', newProduct);
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Error al crear el producto:', error);
     res.status(500).json({ error: 'Error al crear el producto' });
   }
 };
