@@ -1,4 +1,4 @@
-const cloudinary = require('./cloudinaryConfig');
+const cloudinary = require('../cloudinaryConfig');
 const Product = require('./models/Product'); // Modelo de tu base de datos
 
 // Controlador para crear un producto
